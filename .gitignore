@@ -1,0 +1,10 @@
+#ingore all these files
+.metadata/
+RemoteLaunch/
+RemoteSystemsTempFiles/
+*.vscode/
+*.cproject
+*.cwGeneratedFileSetLog
+*.project
+*.settings/
+Ozone/

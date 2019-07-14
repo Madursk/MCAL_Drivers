@@ -6,7 +6,7 @@
  *  Brief: Header for the UART Driver C file
  *  Note: The BRFA bits and the UART calculations DEPEND on
  *  the UART Module clock,  in this case 20 Mhz, it will vary,
- *  recalculate accordingly.
+ *  recalculate accordingly and define it.
  */
 
 #ifndef UARTDRIVER_H_
@@ -14,9 +14,9 @@
 
 #include "datatypes.h"
 #include "derivative.h"
-#include "main.h"
+#include "ProjectClocks.h"
 
-/***********************DEFINES*********************************/
+/*********************** MACROS *********************************/
 #define BAUDRATE_300_   300u
 #define BAUDRATE_600_   600u
 #define BAUDRATE_1200_  1200u
@@ -59,7 +59,9 @@
 #define BDL_128000_  9u
 #define BRFA_256000_ 28u
 #define BDL_256000_  4u
-#else
+
+/* @Madursk: Here should be defined YOUR calculated values*/
+/*#else
 #define BRFA_0_      0u
 #define BDH_300_     16u
 #define BDL_300_     6u
@@ -86,6 +88,7 @@
 #define BDL_128000_  9u
 #define BRFA_256000_ 28u
 #define BDL_256000_  4u
+*/
 #endif
 
 #define U8_UART_RX_BUFFER_LENGTH 40u
@@ -104,7 +107,7 @@
     uint8_t FRAMINERR  :1;
     uint8_t PARITYERR  :1;
    
- }stUART_Modes;
+ }tUART_Status;
 
 typedef enum
 {

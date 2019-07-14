@@ -11,7 +11,7 @@
 
 
 /************************VARIABLES*****************************/
-stUART_Modes tUARTFlags;
+tUART_Status tUART_3_Flags;
 char_t* cTxBufferPointer;
 uint8_t* u8RxBufferPointer[U8_UART_RX_BUFFER_LENGTH];
 uint8_t cRxBufferByte;
@@ -24,7 +24,7 @@ uint8_t debugData;
 void UART3_Status_IRQHandler()
 {
   
-	if(tUARTFlags.TXMODE == 1 && (UART3_S1 & UART_S1_TC_MASK) == UART_S1_TC_MASK )
+	if(tUART_3_Flags.TXMODE == 1 && (UART3_S1 & UART_S1_TC_MASK) == UART_S1_TC_MASK )
    	{
 	   	if(cTxBufferPointer[u8TxBufferIndex] != 0)
 		{
@@ -35,7 +35,7 @@ void UART3_Status_IRQHandler()
 		else
 		{
 			u8TxBufferIndex = 0;
-			tUARTFlags.TXMODE = 0;
+			tUART_3_Flags.TXMODE = 0;
 			UART3_C2 ^= UART_C2_TCIE_MASK;
 		}/*Reset Pointer Index, Disable TC interrupt*/
 	
@@ -47,7 +47,7 @@ void UART3_Status_IRQHandler()
 		if(*(u8RxBufferPointer + u8RxBufferIndex ) == (uint8_t)cEndOfMessage)
 		{
 			u8RxBufferIndex = 0;
-			tUARTFlags.RXMODE = 1;
+			tUART_3_Flags.RXMODE = 1;
 		}
 		else u8RxBufferIndex++;
 	}/*End Reception mode*/
@@ -175,14 +175,14 @@ eStatus efnUARTRead( char_t* lcRxBufferPointer)
 {
 	eStatus leState = FALSE;
 	uint8_t lu8IndexCounter = 0;
-	if(tUARTFlags.RXMODE == 1)
+	if(tUART_3_Flags.RXMODE == 1)
 	{
 		while(*(u8RxBufferPointer + lu8IndexCounter) != cEndOfMessage)
 		{
 			*(lcRxBufferPointer +lu8IndexCounter) = (char_t) *(u8RxBufferPointer + lu8IndexCounter); 
 			
 		}/*End Array copyng from local to function called*/
-		tUARTFlags.RXMODE = 0;	
+		tUART_3_Flags.RXMODE = 0;	
 		leState = TRUE;
 	}/*End Read port when a End of Message was detected*/
 	return leState;
@@ -193,7 +193,7 @@ eStatus efnUARTWrite(const char_t lcTxBuffer[])
 {
 	eStatus leState = FALSE;
 	 cTxBufferPointer = lcTxBuffer;
-	 tUARTFlags.TXMODE = 1;
+	 tUART_3_Flags.TXMODE = 1;
 	 UART3_C2 |= UART_C2_TCIE_MASK;
 	 return leState = TRUE;
 }/*End Write UART Port method */

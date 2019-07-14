@@ -9,6 +9,6 @@ RemoteSystemsTempFiles/
 *.settings/
 Ozone/
 *.d
-*.Ozone
+*.o
 *.elf
 *.map

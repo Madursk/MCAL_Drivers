@@ -8,3 +8,7 @@ RemoteSystemsTempFiles/
 *.project
 *.settings/
 Ozone/
+*.d
+*.Ozone
+*.elf
+*.map

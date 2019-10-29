@@ -95,6 +95,8 @@
 #define U8_UART3_IRQ_HANDLER 5u
 #define U8_UART3_ERROR_HANDLER 6u
 #define U8_UART3_MUX_MODE 3u
+#define UART_END_TRANSMISSION 13u /*You can change this to the end you desire */
+#define UART_END_RECEPTION 0u
 /********************************************************************/
 
 /***************STRUCTURES,UNIONS,ENUMS******************************/
@@ -111,20 +113,20 @@
 
 typedef enum
 {
-  TRUE,
   FALSE,
+  TRUE,
 }eStatus;
 /*****************************************************************/
 
 /*************************PROTOTYPES*****************************/
-void vfnInitPortClocks();
-void vfnPortMux();
+void vfnUUARTInitPortClocks();
+void vfnUARTPortMux();
 void vfnUARTBaudrate(uint32_t lu32Baudrate);
 void vfnUARTInit();
 void vfnUARTSend();
 void vfnUARTInterruptEnable();
 eStatus efnUARTWrite(const char_t lcTxBuffer[]);
-eStatus efnUARTRead(char_t* lcRxBufferPointer);
+eStatus efnUARTRead(char_t* lcRxBufferPointer, uint8_t lu8RxBufferSize);
 /**************************************************************/
 
 #endif /* UARTDRIVER_H_ */

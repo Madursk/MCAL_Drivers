@@ -3,7 +3,7 @@
  *
  *  Created on: Sep 22, 2018
  *  Author: Madursk
- *  Brief: Functions of UART communication
+ *  Brief: Functions of UART communication only channel 3 is used
  */
 /*****************************************/
 #include "UARTDriver.h"

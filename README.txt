@@ -1,8 +1,10 @@
 #################################################################
 #                                                               #
-#       These drivers are done for educational purposes         #
-#       if you want the professional version see the contact    #
-#       or have doubts about the implementation see below       #
+#       These drivers are done for educational purposes which   #
+#       is why a single channel will be used to demonstrate     #
+#       the microcontroller capabilities. If you want the       #
+#       professional version see the contact or have doubts     #
+#       about the implementation see below                      #
 #       contact Madursk     miguelduransk@gmail.com             #
 #################################################################
 

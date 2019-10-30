@@ -14,15 +14,15 @@ void I2C_Cfg(void);
 
 int main(void)
 {
-	I2C_DriverCfg_st.eI2C_Channel = I2C0;
-	I2C_DriverCfg_st.u32I2C_Baudrate=100;
+	
+	I2C_Cfg();
 	I2C_Init(&I2C_DriverCfg_st);
 	
 	
 	
 	
 	for(;;) {	   
-	   	counter++;
+	
 	}
 	
 	return 0;
@@ -30,5 +30,6 @@ int main(void)
 
 void I2C_Cfg(void)
 {
-
+	I2C_DriverCfg_st.eI2C_Channel[0] = I2C0;
+	I2C_DriverCfg_st.u32I2C_Baudrate[0]=100;
 }

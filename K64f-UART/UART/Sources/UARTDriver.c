@@ -11,7 +11,7 @@
 
 
 /************************VARIABLES*****************************/
-tUART_Status tUART_3_Flags;
+UART_Status_st UART_3_Flags_st;
 char_t* cTxBufferPointer;
 char_t  cRxBuffer[40];
 uint8_t cRxBufferByte;
@@ -24,7 +24,7 @@ uint8_t debugData;
 void UART3_Status_IRQHandler()
 {
   
-	if(tUART_3_Flags.TXMODE == 1 && (UART3_S1 & UART_S1_TC_MASK ))
+	if(UART_3_Flags_st.TXMODE == 1 && (UART3_S1 & UART_S1_TC_MASK ))
    	{
 	   	if(cTxBufferPointer[u8TxBufferIndex] != UART_END_TRANSMISSION)
 		{
@@ -35,7 +35,7 @@ void UART3_Status_IRQHandler()
 		else
 		{
 			u8TxBufferIndex = 0;
-			tUART_3_Flags.TXMODE = 0;
+			UART_3_Flags_st.TXMODE = 0;
 			UART3_C2 ^= UART_C2_TCIE_MASK;
 			
 		}/*Reset Pointer Index, Disable TC interrupt*/
@@ -48,23 +48,159 @@ void UART3_Status_IRQHandler()
 	//  	if(*(cRxBuffer + u8RxBufferIndex ) == UART_END_RECEPTION)
 	// 	{
 	// 		u8RxBufferIndex = 0;
-	// 		tUART_3_Flags.RXMODE = 1;
+	// 		UART_3_Flags_st.RXMODE = 1;
 	// 	}
 	// 	else u8RxBufferIndex++;
 	//   }/*End Reception mode*/
 }/*End UART3 Interrupt handler*/
 
-void vfnUARTInitPortClocks()
-{
-	SIM_SCGC5 |= SIM_SCGC5_PORTC_MASK;
-	SIM_SCGC4 |= SIM_SCGC4_UART3_MASK;	
-}/*End Initialization of PORT C Clock and UART3 Clock*/
 
-void vfnUARTPortMux()
+
+Status_en vfnUARTInit(UART_ModuleConfiguration_stPtr UART_CfgStructPtr)
 {
-	PORTC_PCR16=PORT_PCR_MUX(U8_UART3_MUX_MODE);
-	PORTC_PCR17=PORT_PCR_MUX(U8_UART3_MUX_MODE);
-} /*End PCR16 and PCR17 GPIO multiplexing as Tx and Rx*/
+	Status_en eInitializationState = FALSE;
+	uint8_t u8UARTChannelsCounter;
+	if(!(UART_CfgStructPtr== NULLPTR))
+	{
+		for(u8UARTChannelsCounter=0; u8UARTChannelsCounter<=UART_HW_UNITS; u8UARTChannelsCounter++ )
+		{
+			switch((*UART_CfgStructPtr).aeUART_ActiveChannels[u8UARTChannelsCounter])
+			{
+				case UART0:
+				{
+					UART0_C2 = UART_C2_TE_MASK | UART_C2_RE_MASK;
+				}break;
+				case UART1:{}break;
+				case UART2:{}break;
+				case UART3:
+				{
+					/*Initialization of PORT C Clock and UART3 Clock*/
+					SIM_SCGC5 |= SIM_SCGC5_PORTC_MASK;
+					SIM_SCGC4 |= SIM_SCGC4_UART3_MASK;
+					
+					/*PCR16 and PCR17 GPIO multiplexing as Tx and Rx*/
+					PORTC_PCR16=PORT_PCR_MUX(U8_UART3_MUX_MODE);
+					PORTC_PCR17=PORT_PCR_MUX(U8_UART3_MUX_MODE);
+
+					UART3_C2 = UART_C2_TE_MASK | UART_C2_RE_MASK;
+					vfnUARTBaudrate( UART_CfgStructPtr);
+				}break;
+				case UART4:{}break;
+				
+			}
+		}
+		
+		eInitializationState = TRUE;
+	}
+
+	return eInitializationState;
+	
+	
+}/*End UART Receiver and Transmitter Initialization*/
+
+void vfnUARTBaudrate(UART_ModuleConfiguration_stPtr UART_CfgStructPtr)
+{
+	uint8_t i;
+	for(i=0; i<= UART_HW_UNITS; i++)
+	{  	
+		
+		switch((*UART_CfgStructPtr).aeUART_ActiveChannels[i])
+				{
+					case UART0:{}break;
+					case UART1:{}break;
+					case UART2:{}break;
+					case UART3:
+					{
+						// UART3_BDH= UART_BDH_SBR(u8fnBDHSearch(lu32Baudrate));
+						// UART3_C4 = UART_C4_BRFA(u8fnBRFASearch(lu32Baudrate));
+						// UART3_BDL=u8fnBDLSearch(lu32Baudrate);
+					}break;
+					case UART4:{}break;
+				
+				}
+	// if(BAUDRATE_300_ == lu32Baudrate)
+  	// {
+  	// 	UART3_BDH= UART_BDH_SBR(BDH_300_);
+  	//     UART3_C4 = UART_C4_BRFA(BRFA_0_);
+  	// 	UART3_BDL=BDL_300_;
+  			    
+  	// }
+  	// else if (BAUDRATE_600_ == lu32Baudrate)
+  	// {
+	//    UART3_BDH= UART_BDH_SBR(BDH_600_);
+  	//    UART3_C4 = UART_C4_BRFA(BRFA_0_);
+  	//    UART3_BDL=BDL_600_;
+  	// }
+  	// else if (BAUDRATE_1200_ == lu32Baudrate)
+  	// {
+  	//    UART3_BDH= UART_BDH_SBR(BDH_1200_);
+  	//    UART3_C4 = UART_C4_BRFA(BRFA_0_);
+  	//    UART3_BDL=BDL_1200_;
+  	// }
+  	// else if (BAUDRATE_2400_ == lu32Baudrate)
+  	// {
+  	//    UART3_BDH= UART_BDH_SBR(BDH_2400_);
+  	//    UART3_C4 = UART_C4_BRFA(BRFA_0_);
+  	//    UART3_BDL=BDL_2400_;
+  	// }
+  	// else if (BAUDRATE_4800_ == lu32Baudrate)
+  	// {
+  	//    UART3_BDH= UART_BDH_SBR(BDH_4800_);
+  	//    UART3_C4 = UART_C4_BRFA(BRFA_0_);
+  	//    UART3_BDL=BDL_4800_;
+  	// }
+  	// else if (BAUDRATE_9600_ == lu32Baudrate)
+  	// {
+  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
+  	//    UART3_C4 = UART_C4_BRFA(BRFA_0_);
+  	//    UART3_BDL=BDL_9600_;
+  	// }
+  	// else if (BAUDRATE_14400_ == lu32Baudrate)
+    // {
+    //    UART3_BDH= UART_BDH_SBR(BDH_0_);
+  	//    UART3_C4 = UART_C4_BRFA(BRFA_14400_);
+  	//    UART3_BDL=BDL_14400_;
+    // }
+    // else if (BAUDRATE_19200_ == lu32Baudrate)
+  	// {
+  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
+  	//    UART3_C4 = UART_C4_BRFA(BRFA_128000_);
+  	//    UART3_BDL=BDL_128000_;
+  		    				
+    // }
+  	// else if (BAUDRATE_38400_ == lu32Baudrate)
+  	// {
+  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
+  	//    UART3_C4 = UART_C4_BRFA(BRFA_38400_);
+  	//    UART3_BDL=BDL_38400_;
+  	// }
+  	// else if (BAUDRATE_57600_ == lu32Baudrate)
+  	// {
+  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
+  	//    UART3_C4 = UART_C4_BRFA(BRFA_57600_);
+  	//    UART3_BDL=BDL_57600_;
+  	// }
+  	// else if (BAUDRATE_115200_ == lu32Baudrate)
+  	// {
+  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
+  	//    UART3_C4 = UART_C4_BRFA(BRFA_115200_);
+  	//    UART3_BDL= BDL_115200_;
+  	// }
+  	// else if (BAUDRATE_128000_ == lu32Baudrate)
+  	// {
+  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
+  	//    UART3_C4 = UART_C4_BRFA(BRFA_128000_);
+  	//    UART3_BDL=BDL_128000_;
+  	// }
+  	// else if (BAUDRATE_256000_ == lu32Baudrate)
+  	// {
+  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
+  	//    UART3_C4 = UART_C4_BRFA(BRFA_256000_);
+  	//    UART3_BDL=BDL_256000_;
+  	// }
+	}
+  		
+}/*End UART Baudrate setting*/
 
 void vfnUARTInterruptEnable()
 {
@@ -83,102 +219,11 @@ void vfnUARTErrorsInterruptsEnable()
 	NVICISER1 = 1<<(U8_UART3_ERROR_HANDLER);
 }/*End Enable Error Sources Interrupt*/ 
 
-void vfnUARTInit()
+Status_en efnUARTRead( char_t* lcRxBufferPointer, uint8_t lu8RxBufferSize)
 {
-	UART3_C2 = UART_C2_TE_MASK | UART_C2_RE_MASK;
-}/*End UART Receiver and Transmitter Initialization*/
-
-void vfnUARTBaudrate(uint32_t lu32Baudrate)
-{
-  	if(BAUDRATE_300_ == lu32Baudrate)
-  	{
-  		UART3_BDH= UART_BDH_SBR(BDH_300_);
-  	    UART3_C4 = UART_C4_BRFA(BRFA_0_);
-  		UART3_BDL=BDL_300_;
-  			    
-  	}
-  	else if (BAUDRATE_600_ == lu32Baudrate)
-  	{
-	   UART3_BDH= UART_BDH_SBR(BDH_600_);
-  	   UART3_C4 = UART_C4_BRFA(BRFA_0_);
-  	   UART3_BDL=BDL_600_;
-  	}
-  	else if (BAUDRATE_1200_ == lu32Baudrate)
-  	{
-  	   UART3_BDH= UART_BDH_SBR(BDH_1200_);
-  	   UART3_C4 = UART_C4_BRFA(BRFA_0_);
-  	   UART3_BDL=BDL_1200_;
-  	}
-  	else if (BAUDRATE_2400_ == lu32Baudrate)
-  	{
-  	   UART3_BDH= UART_BDH_SBR(BDH_2400_);
-  	   UART3_C4 = UART_C4_BRFA(BRFA_0_);
-  	   UART3_BDL=BDL_2400_;
-  	}
-  	else if (BAUDRATE_4800_ == lu32Baudrate)
-  	{
-  	   UART3_BDH= UART_BDH_SBR(BDH_4800_);
-  	   UART3_C4 = UART_C4_BRFA(BRFA_0_);
-  	   UART3_BDL=BDL_4800_;
-  	}
-  	else if (BAUDRATE_9600_ == lu32Baudrate)
-  	{
-  	   UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	   UART3_C4 = UART_C4_BRFA(BRFA_0_);
-  	   UART3_BDL=BDL_9600_;
-  	}
-  	else if (BAUDRATE_14400_ == lu32Baudrate)
-    {
-       UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	   UART3_C4 = UART_C4_BRFA(BRFA_14400_);
-  	   UART3_BDL=BDL_14400_;
-    }
-    else if (BAUDRATE_19200_ == lu32Baudrate)
-  	{
-  	   UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	   UART3_C4 = UART_C4_BRFA(BRFA_128000_);
-  	   UART3_BDL=BDL_128000_;
-  		    				
-    }
-  	else if (BAUDRATE_38400_ == lu32Baudrate)
-  	{
-  	   UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	   UART3_C4 = UART_C4_BRFA(BRFA_38400_);
-  	   UART3_BDL=BDL_38400_;
-  	}
-  	else if (BAUDRATE_57600_ == lu32Baudrate)
-  	{
-  	   UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	   UART3_C4 = UART_C4_BRFA(BRFA_57600_);
-  	   UART3_BDL=BDL_57600_;
-  	}
-  	else if (BAUDRATE_115200_ == lu32Baudrate)
-  	{
-  	   UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	   UART3_C4 = UART_C4_BRFA(BRFA_115200_);
-  	   UART3_BDL= BDL_115200_;
-  	}
-  	else if (BAUDRATE_128000_ == lu32Baudrate)
-  	{
-  	   UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	   UART3_C4 = UART_C4_BRFA(BRFA_128000_);
-  	   UART3_BDL=BDL_128000_;
-  	}
-  	else if (BAUDRATE_256000_ == lu32Baudrate)
-  	{
-  	   UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	   UART3_C4 = UART_C4_BRFA(BRFA_256000_);
-  	   UART3_BDL=BDL_256000_;
-  	}
-  		
-}/*End UART Baudrate setting*/
-
-
-eStatus efnUARTRead( char_t* lcRxBufferPointer, uint8_t lu8RxBufferSize)
-{
-	eStatus leState = FALSE;
+	Status_en leState = FALSE;
 	uint8_t lu8IndexCounter = 0;
-	if(tUART_3_Flags.RXMODE == 1)
+	if(UART_3_Flags_st.RXMODE == 1)
 	{
 		while(*(cRxBuffer + lu8IndexCounter) != UART_END_RECEPTION)
 		{
@@ -192,20 +237,20 @@ eStatus efnUARTRead( char_t* lcRxBufferPointer, uint8_t lu8RxBufferSize)
 				*(lcRxBufferPointer +lu8IndexCounter) = 0;
 			}while(lu8IndexCounter++ <= lu8RxBufferSize);
 		}
-		tUART_3_Flags.RXMODE = 0;	
+		UART_3_Flags_st.RXMODE = 0;	
 		leState = TRUE;
 	}/*End Read port when a End of Message was detected*/
 	return leState;
 }/*End Read UART Port method*/
  
 
-eStatus efnUARTWrite(const char_t lcTxBuffer[])
+Status_en efnUARTWrite(const char_t lcTxBuffer[])
 {
-	eStatus leState = FALSE;
+	Status_en leState = FALSE;
 	 cTxBufferPointer = lcTxBuffer;
-	 if(tUART_3_Flags.TXMODE == 0)
+	 if(UART_3_Flags_st.TXMODE == 0)
 	 {
-		tUART_3_Flags.TXMODE = 1;
+		UART_3_Flags_st.TXMODE = 1;
 		UART3_C2 |= UART_C2_TCIE_MASK;
 		leState = TRUE;
 	 }

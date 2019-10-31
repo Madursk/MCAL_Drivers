@@ -16,4 +16,6 @@ typedef  unsigned short int uint16_t;
 typedef short int int16_t;
 typedef char char_t;
 
+#define NULLPTR ((void*)0)
+
 #endif /* DATATYPES_H_ */

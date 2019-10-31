@@ -17,6 +17,8 @@
 #include "ProjectClocks.h"
 
 /*********************** MACROS *********************************/
+#define UART_HW_UNITS 5u
+
 #define BAUDRATE_300_   300u
 #define BAUDRATE_600_   600u
 #define BAUDRATE_1200_  1200u
@@ -97,6 +99,7 @@
 #define U8_UART3_MUX_MODE 3u
 #define UART_END_TRANSMISSION 13u /*You can change this to the end you desire */
 #define UART_END_RECEPTION 0u
+
 /********************************************************************/
 
 /***************STRUCTURES,UNIONS,ENUMS******************************/
@@ -109,24 +112,44 @@
     uint8_t FRAMINERR  :1;
     uint8_t PARITYERR  :1;
    
- }tUART_Status;
+ }UART_Status_st;
 
 typedef enum
 {
   FALSE,
   TRUE,
-}eStatus;
+}Status_en;
+typedef enum
+{
+  INACTIVE,
+  UART0,
+  UART1,
+  UART2,
+  UART3,
+  UART4
+
+}UART_Channels_en;
+
+typedef struct
+{
+  UART_Channels_en aeUART_ActiveChannels[UART_HW_UNITS];
+  uint32_t au32UART_Channels_Baudrate[UART_HW_UNITS];
+
+}UART_ModuleConfiguration_st;
+
+typedef  UART_ModuleConfiguration_st* UART_ModuleConfiguration_stPtr;
 /*****************************************************************/
 
 /*************************PROTOTYPES*****************************/
-void vfnUUARTInitPortClocks();
-void vfnUARTPortMux();
-void vfnUARTBaudrate(uint32_t lu32Baudrate);
-void vfnUARTInit();
+Status_en vfnUARTInit(UART_ModuleConfiguration_stPtr UART_CfgStructPtr);
+void vfnUARTBaudrate(UART_ModuleConfiguration_stPtr UART_CfgStructPtr);
 void vfnUARTSend();
 void vfnUARTInterruptEnable();
-eStatus efnUARTWrite(const char_t lcTxBuffer[]);
-eStatus efnUARTRead(char_t* lcRxBufferPointer, uint8_t lu8RxBufferSize);
+Status_en efnUARTWrite(const char_t lcTxBuffer[]);
+Status_en efnUARTRead(char_t* lcRxBufferPointer, uint8_t lu8RxBufferSize);
+uint8_t u8fnBDHSearch(uint32_t lu32Baudrate);
+uint8_t u8fnBRFASearch(uint32_t lu32Baudrate);
+uint8_t u8fnBDLSearch(uint32_t lu32Baudrate);
 /**************************************************************/
 
 #endif /* UARTDRIVER_H_ */

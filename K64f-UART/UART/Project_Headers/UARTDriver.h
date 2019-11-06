@@ -33,6 +33,7 @@
 #define BAUDRATE_128000_ 128000u
 #define BAUDRATE_256000_ 256000u
 
+#define BDH_VALUES 6u
 #if BUS_CLOCK == 20000000L
 #define BRFA_0_      0u
 #define BDH_300_     16u
@@ -98,7 +99,7 @@
 #define U8_UART3_ERROR_HANDLER 6u
 #define U8_UART3_MUX_MODE 3u
 #define UART_END_TRANSMISSION 13u /*You can change this to the end you desire */
-#define UART_END_RECEPTION 0u
+#define UART_END_RECEPTION 13u
 
 /********************************************************************/
 

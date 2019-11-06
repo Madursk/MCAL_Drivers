@@ -3,7 +3,7 @@
  *
  *  Created on: Sep 22, 2018
  *  Author: Madursk
- *  Brief: Functions of UART communication only channel 3 is used
+ *  Brief: Functions of UART communication
  */
 /*****************************************/
 #include "UARTDriver.h"
@@ -100,104 +100,48 @@ Status_en vfnUARTInit(UART_ModuleConfiguration_stPtr UART_CfgStructPtr)
 
 void vfnUARTBaudrate(UART_ModuleConfiguration_stPtr UART_CfgStructPtr)
 {
-	uint8_t i;
-	for(i=0; i<= UART_HW_UNITS; i++)
+	uint8_t u8BaudrateCfgIndex;
+	for(u8BaudrateCfgIndex=0; u8BaudrateCfgIndex<= UART_HW_UNITS; u8BaudrateCfgIndex++)
 	{  	
 		
-		switch((*UART_CfgStructPtr).aeUART_ActiveChannels[i])
+		switch((*UART_CfgStructPtr).aeUART_ActiveChannels[u8BaudrateCfgIndex])
 				{
-					case UART0:{}break;
-					case UART1:{}break;
-					case UART2:{}break;
+					case UART0:
+					{
+						UART0_BDH= UART_BDH_SBR(u8fnBDHSearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]));
+						UART0_C4 = UART_C4_BRFA(u8fnBRFASearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]));
+						UART0_BDL=u8fnBDLSearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]);
+					}break;
+
+					case UART1:
+					{
+						UART1_BDH= UART_BDH_SBR(u8fnBDHSearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]));
+						UART1_C4 = UART_C4_BRFA(u8fnBRFASearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]));
+						UART1_BDL=u8fnBDLSearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]);
+					}break;
+
+					case UART2:
+					{
+						UART2_BDH= UART_BDH_SBR(u8fnBDHSearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]));
+						UART2_C4 = UART_C4_BRFA(u8fnBRFASearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]));
+						UART2_BDL=u8fnBDLSearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]);
+					}break;
+
 					case UART3:
 					{
-						// UART3_BDH= UART_BDH_SBR(u8fnBDHSearch(lu32Baudrate));
-						// UART3_C4 = UART_C4_BRFA(u8fnBRFASearch(lu32Baudrate));
-						// UART3_BDL=u8fnBDLSearch(lu32Baudrate);
+						UART3_BDH= UART_BDH_SBR(u8fnBDHSearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]));
+						UART3_C4 = UART_C4_BRFA(u8fnBRFASearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]));
+						UART3_BDL=u8fnBDLSearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]);
 					}break;
-					case UART4:{}break;
+
+					case UART4:
+					{
+						UART4_BDH= UART_BDH_SBR(u8fnBDHSearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]));
+						UART4_C4 = UART_C4_BRFA(u8fnBRFASearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]));
+						UART4_BDL=u8fnBDLSearch((*UART_CfgStructPtr).au32UART_Channels_Baudrate[u8BaudrateCfgIndex]);
+					}break;
 				
 				}
-	// if(BAUDRATE_300_ == lu32Baudrate)
-  	// {
-  	// 	UART3_BDH= UART_BDH_SBR(BDH_300_);
-  	//     UART3_C4 = UART_C4_BRFA(BRFA_0_);
-  	// 	UART3_BDL=BDL_300_;
-  			    
-  	// }
-  	// else if (BAUDRATE_600_ == lu32Baudrate)
-  	// {
-	//    UART3_BDH= UART_BDH_SBR(BDH_600_);
-  	//    UART3_C4 = UART_C4_BRFA(BRFA_0_);
-  	//    UART3_BDL=BDL_600_;
-  	// }
-  	// else if (BAUDRATE_1200_ == lu32Baudrate)
-  	// {
-  	//    UART3_BDH= UART_BDH_SBR(BDH_1200_);
-  	//    UART3_C4 = UART_C4_BRFA(BRFA_0_);
-  	//    UART3_BDL=BDL_1200_;
-  	// }
-  	// else if (BAUDRATE_2400_ == lu32Baudrate)
-  	// {
-  	//    UART3_BDH= UART_BDH_SBR(BDH_2400_);
-  	//    UART3_C4 = UART_C4_BRFA(BRFA_0_);
-  	//    UART3_BDL=BDL_2400_;
-  	// }
-  	// else if (BAUDRATE_4800_ == lu32Baudrate)
-  	// {
-  	//    UART3_BDH= UART_BDH_SBR(BDH_4800_);
-  	//    UART3_C4 = UART_C4_BRFA(BRFA_0_);
-  	//    UART3_BDL=BDL_4800_;
-  	// }
-  	// else if (BAUDRATE_9600_ == lu32Baudrate)
-  	// {
-  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	//    UART3_C4 = UART_C4_BRFA(BRFA_0_);
-  	//    UART3_BDL=BDL_9600_;
-  	// }
-  	// else if (BAUDRATE_14400_ == lu32Baudrate)
-    // {
-    //    UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	//    UART3_C4 = UART_C4_BRFA(BRFA_14400_);
-  	//    UART3_BDL=BDL_14400_;
-    // }
-    // else if (BAUDRATE_19200_ == lu32Baudrate)
-  	// {
-  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	//    UART3_C4 = UART_C4_BRFA(BRFA_128000_);
-  	//    UART3_BDL=BDL_128000_;
-  		    				
-    // }
-  	// else if (BAUDRATE_38400_ == lu32Baudrate)
-  	// {
-  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	//    UART3_C4 = UART_C4_BRFA(BRFA_38400_);
-  	//    UART3_BDL=BDL_38400_;
-  	// }
-  	// else if (BAUDRATE_57600_ == lu32Baudrate)
-  	// {
-  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	//    UART3_C4 = UART_C4_BRFA(BRFA_57600_);
-  	//    UART3_BDL=BDL_57600_;
-  	// }
-  	// else if (BAUDRATE_115200_ == lu32Baudrate)
-  	// {
-  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	//    UART3_C4 = UART_C4_BRFA(BRFA_115200_);
-  	//    UART3_BDL= BDL_115200_;
-  	// }
-  	// else if (BAUDRATE_128000_ == lu32Baudrate)
-  	// {
-  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	//    UART3_C4 = UART_C4_BRFA(BRFA_128000_);
-  	//    UART3_BDL=BDL_128000_;
-  	// }
-  	// else if (BAUDRATE_256000_ == lu32Baudrate)
-  	// {
-  	//    UART3_BDH= UART_BDH_SBR(BDH_0_);
-  	//    UART3_C4 = UART_C4_BRFA(BRFA_256000_);
-  	//    UART3_BDL=BDL_256000_;
-  	// }
 	}
   		
 }/*End UART Baudrate setting*/
@@ -257,3 +201,153 @@ Status_en efnUARTWrite(const char_t lcTxBuffer[])
 	 return leState;
 	 
 }/*End Write UART Port method */
+
+uint8_t u8fnBDHSearch(uint32_t lu32Baudrate)
+{
+	uint8_t u8BDH=BDH_0_;
+	if(BAUDRATE_9600_ < lu32Baudrate )
+	{
+		switch(lu32Baudrate)
+		{
+			case BAUDRATE_300_:
+			{
+				u8BDH = BDH_300_;
+			}break;
+
+			case BAUDRATE_600_:
+			{
+				u8BDH = BDH_600_;
+			}break;
+				
+			case BAUDRATE_1200_:
+			{
+				u8BDH= BDH_1200_;
+			}break;
+				
+			case BAUDRATE_2400_:
+			{
+				u8BDH = BDH_2400_;
+			}break;
+
+			case BAUDRATE_4800_:
+			{
+				u8BDH = BDH_4800_;
+			}break;
+		}
+	}
+	return u8BDH;
+}
+
+uint8_t u8fnBRFASearch(uint32_t lu32Baudrate)
+{
+	uint8_t u8BRFA= BRFA_0_;
+	if(BAUDRATE_14400_ < lu32Baudrate)
+	{
+			switch(lu32Baudrate)
+		{
+			case BAUDRATE_19200_:
+			{
+				u8BRFA = BRFA_19200_;
+			}break;
+			
+			case BAUDRATE_38400_:
+			{
+				u8BRFA = BRFA_38400_;
+			}break;
+			
+			case BAUDRATE_57600_:
+			{
+				u8BRFA = BRFA_57600_;
+			}break;
+			
+			case BAUDRATE_115200_:
+			{
+				u8BRFA = BRFA_115200_;
+			}break;
+			
+			case BAUDRATE_128000_:
+			{
+				u8BRFA = BRFA_128000_;
+			}break;
+
+			case BAUDRATE_256000_:
+			{
+				u8BRFA = BRFA_256000_;
+			}break;
+		}
+	}
+	
+	return u8BRFA;
+}
+uint8_t u8fnBDLSearch(uint32_t lu32Baudrate)
+{
+	uint8_t u8BDL=0;
+	switch(lu32Baudrate)
+	{
+		case BAUDRATE_300_:
+		{
+			u8BDL = BDL_300_;
+		}break;
+		
+		case BAUDRATE_600_:
+		{
+			u8BDL = BDL_600_;
+		}break;
+
+		case BAUDRATE_1200_:
+		{
+			u8BDL = BDL_1200_;
+		}break;
+
+		case BAUDRATE_2400_:
+		{
+			u8BDL = BDL_2400_;
+		}break;
+
+		case BAUDRATE_4800_:
+		{
+			u8BDL = BDL_4800_;
+		}break;
+
+		case BAUDRATE_9600_:
+		{
+			u8BDL = BDL_9600_;
+		}break;
+		
+		case BAUDRATE_14400_:
+		{
+			u8BDL = BDL_14400_;
+		}break;
+		
+		case BAUDRATE_19200_:
+		{
+			u8BDL = BDL_19200_;
+		}break;
+		
+		case BAUDRATE_38400_:
+		{
+			u8BDL = BDL_38400_;
+		}break;
+		
+		case BAUDRATE_57600_:
+		{
+			u8BDL = BDL_57600_;
+		}break;
+		
+		case BAUDRATE_115200_:
+		{
+			u8BDL = BDL_115200_;
+		}break;
+		
+		case BAUDRATE_128000_:
+		{
+			u8BDL = BDL_128000_;
+		}break;
+
+		case BAUDRATE_256000_:
+		{
+			u8BDL = BDL_256000_;
+		}break;
+	}
+	return u8BDL;
+}

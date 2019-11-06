@@ -10,7 +10,9 @@
 
 
 #include "UARTDriver.h"
+
 #define UART_RX_MAILBOX 40u
+
 UART_ModuleConfiguration_st UART_DriverCfg_st;
 
 int main(void)

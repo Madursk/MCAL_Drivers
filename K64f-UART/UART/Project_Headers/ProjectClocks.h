@@ -11,6 +11,6 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-#define BUS_CLOCK 20000000L
+#define BUS_CLOCK 20000000L /*Some Baudrates are not reacheable with this clock*/
 
 #endif /* MAIN_H_ */

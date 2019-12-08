@@ -113,11 +113,6 @@ UART_Status_en* vfnUARTInit(UART_ModuleConfiguration_stPtr UART_CfgStructPtr)
 									if((*UART_CfgStructPtr).aeUART_Channels_IRDAs[u8UARTChannelsCounter] ==IRDA_INACTIVE)
 									{
 										vfnUARTBaudrate(UART_CfgStructPtr);
-										// ubd = (uint16_t)((21000*1000)/(9600 * 16));  /* Calculate baud settings */
-										// temp = UART3_BDH & ~(UART_BDH_SBR(0x1F));   /*Save the value of UART0_BDH except SBR*/
-										// UART3_BDH = temp | (((ubd & 0x1F00) >> 8));
-										// UART3_BDL = (uint8_t)(ubd & UART_BDL_SBR_MASK);
-										vfnUARTInterruptEnable();
 										UART3_C2 |=  (UART_C2_TE_MASK | UART_C2_RE_MASK );
 										eUART_Status[u8UARTChannelsCounter] = UART_INITIALIZED;
 									}
